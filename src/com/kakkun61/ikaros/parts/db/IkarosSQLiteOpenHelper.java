@@ -2,66 +2,139 @@ package com.kakkun61.ikaros.parts.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.sql.SQLException;
 
 public class IkarosSQLiteOpenHelper extends SQLiteOpenHelper {
-    private static final String DB_NAME = "com.kakkun61.ikaros.parts";
-    private static final String ASSET_DB_PATH = "CraftFleet.db";
-    private static final int DB_VERSION = 1;
 
-    private final Context context;
+    private static String DB_NAME = "com.kakkun61.ikaros.parts";
+    private static String DB_NAME_ASSET = "CraftFleet.db";
+    private static final int DATABASE_VERSION = 17;
 
-    public IkarosSQLiteOpenHelper(final Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
-        this.context = context;
+    private SQLiteDatabase mDatabase;
+    private final Context mContext;
+    private final File mDatabasePath;
+
+    public IkarosSQLiteOpenHelper(Context context) {
+        super(context, DB_NAME, null, DATABASE_VERSION);
+        mContext = context;
+        mDatabasePath = mContext.getDatabasePath(DB_NAME);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        try {
-            copyDataBaseFromAsset();
-        } catch (IOException e) {
-            Log.d("tenkura parts", e.toString());
-        }
-    }
+    /**
+     * asset に格納したデータベースをコピーするための空のデータベースを作成する
+     */
+    public void createEmptyDataBase() throws IOException {
+        boolean dbExist = checkDataBaseExists();
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        context.getDatabasePath(DB_NAME).delete();
-        try {
-            copyDataBaseFromAsset();
-        } catch (IOException e) {
-            Log.d("tenkura parts", e.toString());
+        if (dbExist) {
+            // すでにデータベースは作成されている
+        } else {
+            // このメソッドを呼ぶことで、空のデータベースがアプリのデフォルトシステムパスに作られる
+            getReadableDatabase();
+
+            try {
+                // asset に格納したデータベースをコピーする
+                copyDataBaseFromAsset();
+
+                String dbPath = mDatabasePath.getAbsolutePath();
+                SQLiteDatabase checkDb = null;
+                try {
+                    checkDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READWRITE);
+                } catch (SQLiteException e) {
+                }
+
+                if (checkDb != null) {
+                    checkDb.setVersion(DATABASE_VERSION);
+                    checkDb.close();
+                }
+
+            } catch (IOException e) {
+                throw new Error("Error copying database");
+            }
         }
     }
 
     /**
-     * asset の db ファイルから実際の DB にコピーする
+     * 再コピーを防止するために、すでにデータベースがあるかどうか判定する
+     *
+     * @return 存在している場合 {@code true}
      */
-    private void copyDataBaseFromAsset() throws IOException {
+    private boolean checkDataBaseExists() {
+        String dbPath = mDatabasePath.getAbsolutePath();
+
+        SQLiteDatabase checkDb = null;
+        try {
+            checkDb = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY);
+        } catch (SQLiteException e) {
+            // データベースはまだ存在していない
+        }
+
+        if (checkDb == null) {
+            // データベースはまだ存在していない
+            return false;
+        }
+
+        int oldVersion = checkDb.getVersion();
+        int newVersion = DATABASE_VERSION;
+
+        if (oldVersion == newVersion) {
+            // データベースは存在していて最新
+            checkDb.close();
+            return true;
+        }
+
+        // データベースが存在していて最新ではないので削除
+        File f = new File(dbPath);
+        f.delete();
+        return false;
+    }
+
+    /**
+     * asset に格納したデーだベースをデフォルトのデータベースパスに作成したからのデータベースにコピーする
+     */
+    private void copyDataBaseFromAsset() throws IOException{
 
         // asset 内のデータベースファイルにアクセス
-        InputStream input = context.getAssets().open(ASSET_DB_PATH);
+        InputStream mInput = mContext.getAssets().open(DB_NAME_ASSET);
 
         // デフォルトのデータベースパスに作成した空のDB
-        OutputStream output = new FileOutputStream(context.getDatabasePath(DB_NAME));
+        OutputStream mOutput = new FileOutputStream(mDatabasePath);
 
         // コピー
         byte[] buffer = new byte[1024];
         int size;
-        while ((size = input.read(buffer)) > 0) {
-            output.write(buffer, 0, size);
+        while ((size = mInput.read(buffer)) > 0) {
+            mOutput.write(buffer, 0, size);
         }
 
         // Close the streams
-        output.flush();
-        output.close();
-        input.close();
+        mOutput.flush();
+        mOutput.close();
+        mInput.close();
+    }
+
+    public SQLiteDatabase openDataBase() throws SQLException {
+        return getReadableDatabase();
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    }
+
+    @Override
+    public synchronized void close() {
+        if(mDatabase != null)
+            mDatabase.close();
+
+        super.close();
     }
 }

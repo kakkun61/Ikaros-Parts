@@ -13,7 +13,7 @@ public class PartsListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         final SQLiteDatabase db = new IkarosSQLiteOpenHelper(getActivity()).getReadableDatabase();
-        final Cursor items = db.query("Items", new String[]{"Rank", "ID"}, null, null, null, null, null, null);
+        final Cursor items = db.query("Items", null, null, null, null, null, null, null);
         setListAdapter(new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.pats_list_row,

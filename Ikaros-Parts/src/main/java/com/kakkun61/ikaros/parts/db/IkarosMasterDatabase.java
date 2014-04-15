@@ -16,19 +16,15 @@ public class IkarosMasterDatabase {
     private IkarosMasterDatabase() {}
 
     public static SQLiteDatabase getReadableSQLiteDatabase(final Context context) throws IOException {
-        try {
-            final SQLiteDatabase database = SQLiteDatabase.openDatabase(context.getDatabasePath(DB_NAME).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        final SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath(DB_NAME).getPath(), null);
 
-            // DB が存在して最新なら
-            if (database.getVersion() == DB_VERSION) {
-                return database;
-            }
-        } catch (SQLiteException e) {
-            // DB が存在しないとき
+        // DB が存在して最新なら
+        if (database.getVersion() == DB_VERSION) {
+            return database;
         }
 
-        // DB が存在しない または 最新でない とき
-        // aasset からコピー
+        // DB を新しく作った、または最新でないとき
+        // asset からコピー
         copyDataBaseFromAsset(context);
 
         return SQLiteDatabase.openDatabase(context.getDatabasePath(DB_NAME).getPath(), null, SQLiteDatabase.OPEN_READONLY);

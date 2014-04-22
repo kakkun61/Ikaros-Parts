@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Ikaros-Parts.iml" filepath="$PROJECT_DIR$/Ikaros-Parts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Ikaros-Parts-Gradle.iml" filepath="$PROJECT_DIR$/Ikaros-Parts-Gradle.iml" />
       <module fileurl="file://$PROJECT_DIR$/Ikaros-Parts/Ikaros-Parts-Ikaros-Parts.iml" filepath="$PROJECT_DIR$/Ikaros-Parts/Ikaros-Parts-Ikaros-Parts.iml" />
     </modules>
   </component>

@@ -31,6 +31,8 @@ public class IkarosMasterDatabase {
         // aasset からコピー
         copyDataBaseFromAsset(context);
 
+        addIdColumn(SQLiteDatabase.openDatabase(context.getDatabasePath(DB_NAME).getPath(), null, SQLiteDatabase.OPEN_READWRITE));
+
         return SQLiteDatabase.openDatabase(context.getDatabasePath(DB_NAME).getPath(), null, SQLiteDatabase.OPEN_READONLY);
     }
 
@@ -44,6 +46,7 @@ public class IkarosMasterDatabase {
         InputStream input = context.getAssets().open(ASSET_DB_PATH);
 
         // デフォルトのデータベースパスに作成した空のDB
+        createDatabaseFileIfNecessary(context);
         OutputStream output = new FileOutputStream(context.getDatabasePath(DB_NAME));
 
         // コピー
@@ -61,5 +64,27 @@ public class IkarosMasterDatabase {
         input.close();
         Log.d("asset db size", "" + totalSize);
         Log.d("data db size (just after copy)", "" + new File(context.getDatabasePath(DB_NAME).getPath()).length());
+    }
+
+    /**
+     * {@link android.database.sqlite.SQLiteOpenHelper#getReadableDatabase()} を呼ぶことで {@link #DB_NAME} の DB ファイルを作る。
+     * @param context
+     */
+    private static void createDatabaseFileIfNecessary(final Context context) {
+        new SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+            @Override
+            public void onCreate(SQLiteDatabase db) {}
+
+            @Override
+            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+        }.getReadableDatabase();
+    }
+
+    /**
+     * {@link android.widget.CursorAdapter} が {@code _id} カラムを必要とするので追加
+     * @param db
+     */
+    private static void addIdColumn(final SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE Items ADD COLUMN '_id' INT");
     }
 }

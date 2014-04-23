@@ -46,9 +46,8 @@ public class IkarosMasterDatabase {
         InputStream input = context.getAssets().open(ASSET_DB_PATH);
 
         // デフォルトのデータベースパスに作成した空のDB
-        File outputFile = context.getDatabasePath(DB_NAME);
         createDatabaseFileIfNecessary(context);
-        OutputStream output = new FileOutputStream(outputFile);
+        OutputStream output = new FileOutputStream(context.getDatabasePath(DB_NAME));
 
         // コピー
         byte[] buffer = new byte[1024];

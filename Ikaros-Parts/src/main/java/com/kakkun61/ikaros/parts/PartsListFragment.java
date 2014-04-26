@@ -1,10 +1,15 @@
 package com.kakkun61.ikaros.parts;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.kakkun61.ikaros.parts.db.IkarosMasterDatabase;
 
@@ -31,8 +36,28 @@ public class PartsListFragment extends ListFragment {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        RowData data = (RowData) v.getTag();
+        if (data == null) {
+            data = new RowData();
+            data.rank = (TextView) v.findViewById(R.id.rank);
+            data.name = (TextView) v.findViewById(R.id.name);
+            v.setTag(data);
+        }
+        final FragmentManager fragmentManager = getFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        final PartDetailFragment partDetailFragment = new PartDetailFragment();
+        Bundle args = new Bundle();
+        args.putCharSequence("name", data.name.getText());
+        partDetailFragment.setArguments(args);
+        fragmentTransaction.add(R.id.contents, partDetailFragment);
+        fragmentTransaction.commit();
+    }
 }
 
 class RowData {
-
+    public TextView rank;
+    public TextView name;
 }

@@ -22,7 +22,7 @@ public class PartsListFragment extends ListFragment {
                     getActivity(),
                     R.layout.parts_list_row,
                     items,
-                    new String[]{"Rank", "ID"},
+                    new String[]{"Rank", "ItemName"},
                     new int[]{R.id.rank, R.id.name},
                     0
             ));

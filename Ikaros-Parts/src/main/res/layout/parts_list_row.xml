@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                tools:context=".HomeActivity">
 
     <TextView
             android:id="@+id/star"
@@ -10,19 +16,23 @@
             android:layout_height="wrap_content"
             android:text="@string/star"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
 
     <TextView
             android:id="@+id/rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/star"/>
+            android:layout_toEndOf="@id/star"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
 
     <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/rank"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
 
 </RelativeLayout>

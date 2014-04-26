@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.kakkun61.ikaros.parts.db.IkarosMasterDatabase;
 
 import java.io.IOException;
@@ -52,7 +53,8 @@ public class PartsListFragment extends ListFragment {
         Bundle args = new Bundle();
         args.putCharSequence("name", data.name.getText());
         partDetailFragment.setArguments(args);
-        fragmentTransaction.add(R.id.contents, partDetailFragment);
+        fragmentTransaction.replace(R.id.contents, partDetailFragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }

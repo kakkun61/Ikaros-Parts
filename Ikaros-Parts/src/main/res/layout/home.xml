@@ -10,7 +10,8 @@
             android:id="@+id/contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            class="com.kakkun61.ikaros.parts.PartsListFragment" tools:layout="@layout/pats_list_row"/>
+            class="com.kakkun61.ikaros.parts.PartsListFragment"
+            tools:layout="@layout/parts_list_row"/>
 
 </LinearLayout>
 

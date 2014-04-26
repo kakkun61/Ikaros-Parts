@@ -20,7 +20,7 @@ public class PartsListFragment extends ListFragment {
             final Cursor items = db.query("Items", null, null, null, null, null, null, null);
             setListAdapter(new SimpleCursorAdapter(
                     getActivity(),
-                    R.layout.pats_list_row,
+                    R.layout.parts_list_row,
                     items,
                     new String[]{"Rank", "ID"},
                     new int[]{R.id.rank, R.id.name},

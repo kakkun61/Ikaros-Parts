@@ -1,9 +1,12 @@
 package com.kakkun61.ikaros.parts.model;
 
 import android.database.Cursor;
+
 import com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts;
 
-public class PartModel {
+import java.io.Serializable;
+
+public class PartModel implements Serializable {
     public final int rank;
     public final CharSequence name;
     public final CharSequence missionSkill;
@@ -43,24 +46,20 @@ public class PartModel {
         }
     }
 
-    public static class PartsConverter {
-        private PartsConverter() {}
-
-        public PartModel[] convert(final Cursor cursor) {
-            final int count = cursor.getCount();
-            final PartModel[] parts= new PartModel[count];
-            cursor.moveToFirst();
-            for (int i = 0; i < count; i++) {
-                parts[i] = new PartModel(
-                        cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.name)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.missionSkill)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.battleSkill)),
-                        Position.fromInt(cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)))
-                );
-                cursor.moveToNext();
-            }
-            return parts;
+    public static PartModel[] convert(final Cursor cursor) {
+        final int count = cursor.getCount();
+        final PartModel[] parts= new PartModel[count];
+        cursor.moveToFirst();
+        for (int i = 0; i < count; i++) {
+            parts[i] = new PartModel(
+                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.name)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.missionSkill)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.battleSkill)),
+                    Position.fromInt(cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)))
+            );
+            cursor.moveToNext();
         }
+        return parts;
     }
 }

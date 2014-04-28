@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kakkun61.ikaros.parts.db.IkarosMasterDatabase;
+import com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts;
 
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class PartsListFragment extends ListFragment {
 
         try {
             final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(getActivity());
-            final Cursor items = db.query("Items", null, null, null, null, null, null, null);
+            final Cursor items = db.query(Parts.name, null, null, null, null, null, null, null);
             setListAdapter(new SimpleCursorAdapter(
                     getActivity(),
                     R.layout.parts_list_row,
@@ -40,9 +41,9 @@ public class PartsListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        RowData data = (RowData) v.getTag();
+        ViewHolder data = (ViewHolder) v.getTag();
         if (data == null) {
-            data = new RowData();
+            data = new ViewHolder();
             data.rank = (TextView) v.findViewById(R.id.rank);
             data.name = (TextView) v.findViewById(R.id.name);
             v.setTag(data);
@@ -59,9 +60,9 @@ public class PartsListFragment extends ListFragment {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-}
 
-class RowData {
-    public TextView rank;
-    public TextView name;
+    private class ViewHolder {
+        public TextView rank;
+        public TextView name;
+    }
 }

@@ -29,6 +29,9 @@ public class PartDetailFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.part_detail, container, false);
         ((TextView) view.findViewById(R.id.rank)).setText(String.valueOf(part.rank));
+        ((TextView) view.findViewById(R.id.position)).setText(part.position.name());
+        ((TextView) view.findViewById(R.id.missionSkill)).setText(part.missionSkill);
+        ((TextView) view.findViewById(R.id.battleSkill)).setText(part.battleSkill);
         return view;
     }
 }

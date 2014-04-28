@@ -6,6 +6,7 @@ import android.app.ListFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -50,10 +51,12 @@ public class PartsListFragment extends ListFragment {
         final FragmentManager fragmentManager = getFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         final PartDetailFragment partDetailFragment = new PartDetailFragment();
+        fragmentTransaction.hide(this);
         Bundle args = new Bundle();
         args.putCharSequence("name", data.name.getText());
+        args.putCharSequence("rank", data.rank.getText());
         partDetailFragment.setArguments(args);
-        fragmentTransaction.replace(R.id.contents, partDetailFragment);
+        fragmentTransaction.add(R.id.contents, partDetailFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

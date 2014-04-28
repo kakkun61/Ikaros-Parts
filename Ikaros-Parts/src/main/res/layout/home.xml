@@ -6,12 +6,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-    <fragment
-            android:id="@+id/contents"
+    <RelativeLayout
+        android:id="@+id/contents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.kakkun61.ikaros.parts.PartsListFragment"
             tools:layout="@layout/parts_list_row"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
 

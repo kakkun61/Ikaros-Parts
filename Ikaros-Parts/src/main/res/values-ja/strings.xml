@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="position">部位</string>
+    <string name="mission_skill">ミッションスキル</string>
+    <string name="battle_skill">艦隊戦スキル</string>
 </resources>

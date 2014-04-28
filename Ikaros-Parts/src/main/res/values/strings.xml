@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">天空のクラフトフリート パーツ検索</string>
     <string name="star">☆</string>
+    <string name="position">Position</string>
+    <string name="mission_skill">Mission Skill</string>
+    <string name="battle_skill">Battle Skill</string>
 </resources>

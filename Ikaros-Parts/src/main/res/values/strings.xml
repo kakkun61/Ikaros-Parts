@@ -5,4 +5,5 @@
     <string name="position">Position</string>
     <string name="mission_skill">Mission Skill</string>
     <string name="battle_skill">Battle Skill</string>
+    <string name="trigger">Trigger</string>
 </resources>

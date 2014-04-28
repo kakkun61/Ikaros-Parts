@@ -14,6 +14,7 @@ public class DatabaseInfo {
             public static final String name = "ItemName";
             public static final String missionSkill = "MSkill";
             public static final String battleSkill = "BSkill";
+            public static final String trigger = "SkillNeed";
         }
     }
 }

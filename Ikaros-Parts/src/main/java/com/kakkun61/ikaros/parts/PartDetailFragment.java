@@ -32,6 +32,7 @@ public class PartDetailFragment extends Fragment{
         ((TextView) view.findViewById(R.id.position)).setText(part.position.name());
         ((TextView) view.findViewById(R.id.missionSkill)).setText(part.missionSkill);
         ((TextView) view.findViewById(R.id.battleSkill)).setText(part.battleSkill);
+        ((TextView) view.findViewById(R.id.trigger)).setText(part.trigger);
         return view;
     }
 }

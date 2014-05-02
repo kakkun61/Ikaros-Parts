@@ -1,9 +1,13 @@
 package com.kakkun61.ikaros.parts.model;
 
+import android.content.Context;
 import android.database.Cursor;
 
+import android.database.sqlite.SQLiteDatabase;
+import com.kakkun61.ikaros.parts.db.IkarosMasterDatabase;
 import com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 public class PartModel implements Serializable {
@@ -48,7 +52,7 @@ public class PartModel implements Serializable {
         }
     }
 
-    public static PartModel[] convert(final Cursor cursor) {
+    private static PartModel[] convert(final Cursor cursor) {
         final int count = cursor.getCount();
         final PartModel[] parts= new PartModel[count];
         cursor.moveToFirst();
@@ -64,5 +68,11 @@ public class PartModel implements Serializable {
             cursor.moveToNext();
         }
         return parts;
+    }
+
+    public static PartModel[] getAll(final Context context) throws IOException {
+        final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(context);
+        final Cursor items = db.query(Parts.name, null, null, null, null, null, null, null);
+        return PartModel.convert(items);
     }
 }

@@ -27,14 +27,12 @@ public class PartsListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         try {
-            final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(getActivity());
-            final Cursor items = db.query(Parts.name, null, null, null, null, null, null, null);
-            final PartModel[] parts = PartModel.convert(items);
-            partsAdapter = new SimpleArrayAdapter<PartModel>(
+            final PartModel[] parts = PartModel.getAll(getActivity());
+            partsAdapter = new SimpleArrayAdapter<>(
                     getActivity(),
                     R.layout.parts_list_row,
                     parts,
-                    new SimpleArrayAdapter.Mapper<PartModel>(){
+                    new SimpleArrayAdapter.Mapper<PartModel>() {
                         @Override
                         public void map(PartModel item, View view) {
                             ViewHolder holder = ViewHolder.viewGetTag(view);

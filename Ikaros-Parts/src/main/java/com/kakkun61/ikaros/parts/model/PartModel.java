@@ -17,14 +17,16 @@ public class PartModel implements Serializable {
     public final CharSequence battleSkill;
     public final Position position;
     public final CharSequence trigger;
+    public final PartModel[] materials;
 
-    public PartModel(CharSequence name, int rank, CharSequence missionSkill, CharSequence battleSkill, Position position, CharSequence trigger) {
+    private PartModel(CharSequence name, int rank, CharSequence missionSkill, CharSequence battleSkill, Position position, CharSequence trigger, PartModel[] materials) {
         this.name = name;
         this.rank = rank;
         this.missionSkill = missionSkill;
         this.battleSkill = battleSkill;
         this.position = position;
         this.trigger = trigger;
+        this.materials = materials;
     }
 
     public static enum Position {
@@ -57,13 +59,15 @@ public class PartModel implements Serializable {
         final PartModel[] parts= new PartModel[count];
         cursor.moveToFirst();
         for (int i = 0; i < count; i++) {
+            final PartModel[] materials = null;
             parts[i] = new PartModel(
                     cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.name)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.missionSkill)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.battleSkill)),
                     Position.fromInt(cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank))),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.trigger))
+                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.trigger)),
+                    materials
             );
             cursor.moveToNext();
         }

@@ -3,6 +3,10 @@ package com.kakkun61.ikaros.parts.model;
 public class DatabaseInfo {
     private DatabaseInfo() {}
 
+    /**
+     * {@link com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts.Columns#rank} と {@link com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts.Columns#id}
+     * で一意に識別できるもよう。
+     */
     public static class Parts {
         private Parts() {}
         public static final String name = "Items";

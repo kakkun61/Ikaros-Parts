@@ -97,6 +97,7 @@ public class PartModel implements Serializable {
         return PartModel.convert(items, context);
     }
 
+    // TODO Recipe テーブルでは rank がないのでこれがマップのキーになるのはダメそう。キーはパーツ名かな。
     private static class Id {
         private final int rank;
         private final int id;

@@ -6,6 +6,7 @@ import android.app.ListFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -36,6 +37,11 @@ public class PartsListFragment extends ListFragment {
                         @Override
                         public void map(PartModel item, View view) {
                             ViewHolder holder = ViewHolder.viewGetTag(view);
+                            // TODO remove debug code
+                            if (item == null) {
+                                Log.d("ikaros", "item == null");
+                            }
+                            Log.d("ikaros", item.rank + " " + item.name);
                             holder.name.setText(item.name);
                             holder.rank.setText(String.valueOf(item.rank));
                         }

@@ -4,12 +4,15 @@ import android.content.Context;
 import android.database.Cursor;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import com.kakkun61.ikaros.parts.db.IkarosMasterDatabase;
 import com.kakkun61.ikaros.parts.model.DatabaseInfo.Parts;
 import com.kakkun61.ikaros.parts.model.DatabaseInfo.Recipe;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,24 +64,22 @@ public class PartModel implements Serializable {
 
     private static PartModel[] convert(final Cursor cursor, final Context context) throws IOException {
         // TODO まずは配列をマップに変える
-        final int partsNumber = cursor.getCount();
-        final Map<Id, PartModel> parts = new HashMap<>(partsNumber);
+        final int partsCount = cursor.getCount();
+        final Map<String, PartModel> parts = new HashMap<>(partsCount);
 //        final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(context);
         cursor.moveToFirst();
-        for (int i = 0; i < partsNumber; i++) {
-            final int partId = cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.id));
-
+        for (int i = 0; i < partsCount; i++) {
 //            final Cursor materialCursor = db.query(Recipe.name, null, Recipe.Columns.productId + "=?", new String[]{Integer.toString(partId)}, null, null, null);
 //            final PartModel[] materials = new PartModel[materialCursor.getCount()];
 //            for (int j = 0; j < materials.length; j++) {
 //                // TODO ここで再帰的にパーツモデルを作ると重複してインスタインスを作ってしまうので、レシピのない状態のモデルをマップに格納
 //            }
 
-            final int rank = cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank));
-            parts.put(new Id(rank, partId), new PartModel(
-                    partId,
-                    cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.name)),
-                    rank,
+            final String name = cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.name));
+            parts.put(name, new PartModel(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.id)),
+                    name,
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.missionSkill)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Parts.Columns.battleSkill)),
                     Position.fromInt(cursor.getInt(cursor.getColumnIndexOrThrow(Parts.Columns.rank))),
@@ -86,45 +87,52 @@ public class PartModel implements Serializable {
                     null//materials
             ));
             cursor.moveToNext();
+//            Log.d("ikaros", "cursor.moveToNext: " + cursor.moveToNext());
         }
-        final PartModel[] partsArray = new PartModel[partsNumber];
-        return parts.values().toArray(partsArray);
+        // FIXME: partsArray の要素1つが null になるバグ、Items テーブルの ItemName カラムが1つダブってたからだった
+        final PartModel[] partsArray = new PartModel[partsCount];
+        parts.values().toArray(partsArray);
+        Arrays.sort(partsArray, new Comparator<PartModel>() {
+            @Override
+            public int compare(PartModel lhs, PartModel rhs) {
+                if (lhs == null && rhs == null) {
+                    return 0;
+                }
+                if (lhs == null) {
+                    return -1;
+                }
+                if (rhs == null) {
+                    return 1;
+                }
+                return lhs.name.toString().compareTo(rhs.name.toString());
+            }
+        });
+        for (int i = 0; i < partsCount; i++) {
+            final PartModel m = partsArray[i];
+            Log.d("ikaros", i + "/" + partsCount + ": " + (m == null? "null": m.name.toString()));
+        }
+        System.exit(0);
+        return partsArray;
     }
 
     public static PartModel[] getAll(final Context context) throws IOException {
         final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(context);
-        final Cursor items = db.query(Parts.name, null, null, null, null, null, null, null);
+        final Cursor items = db.rawQuery("SELECT * from " + Parts.name + " WHERE " + Parts.Columns.name + " IS NOT NULL", null);
+//        final Cursor items = db.query(Parts.name, null, Parts.Columns.name + " IS NOT NULL", null, null, null, null, null);
         return PartModel.convert(items, context);
     }
 
-    // TODO Recipe テーブルでは rank がないのでこれがマップのキーになるのはダメそう。キーはパーツ名かな。
-    private static class Id {
-        private final int rank;
-        private final int id;
-
-        private Id(int rank, int id) {
-            this.rank = rank;
-            this.id = id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Id)) return false;
-
-            Id id1 = (Id) o;
-
-            if (id != id1.id) return false;
-            if (rank != id1.rank) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = rank;
-            result = 31 * result + id;
-            return result;
-        }
+    @Override
+    public String toString() {
+        return "PartModel{" +
+                "id=" + id +
+                ", rank=" + rank +
+                ", name=" + name +
+                ", missionSkill=" + missionSkill +
+                ", battleSkill=" + battleSkill +
+                ", position=" + position +
+                ", trigger=" + trigger +
+                ", materials[" + (materials == null? "null": materials.length) + "]" +
+                '}';
     }
 }

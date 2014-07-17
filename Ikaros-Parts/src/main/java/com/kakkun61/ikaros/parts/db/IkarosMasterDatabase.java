@@ -32,7 +32,7 @@ public class IkarosMasterDatabase {
         }
 
         // DB が存在しない または 最新でない とき
-        // aasset からコピー
+        // asset からコピー
         copyDataBaseFromAsset(context);
 
         addIdColumn(SQLiteDatabase.openDatabase(context.getDatabasePath(DB_NAME).getPath(), null, SQLiteDatabase.OPEN_READWRITE));

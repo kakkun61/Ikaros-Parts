@@ -6,6 +6,7 @@ import android.app.ListFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -27,17 +28,20 @@ public class PartsListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         try {
-            final SQLiteDatabase db = IkarosMasterDatabase.getReadableSQLiteDatabase(getActivity());
-            final Cursor items = db.query(Parts.name, null, null, null, null, null, null, null);
-            final PartModel[] parts = PartModel.convert(items);
-            partsAdapter = new SimpleArrayAdapter<PartModel>(
+            final PartModel[] parts = PartModel.getAll(getActivity());
+            partsAdapter = new SimpleArrayAdapter<>(
                     getActivity(),
                     R.layout.parts_list_row,
                     parts,
-                    new SimpleArrayAdapter.Mapper<PartModel>(){
+                    new SimpleArrayAdapter.Mapper<PartModel>() {
                         @Override
                         public void map(PartModel item, View view) {
                             ViewHolder holder = ViewHolder.viewGetTag(view);
+                            // TODO remove debug code
+                            if (item == null) {
+                                Log.d("ikaros", "item == null");
+                            }
+                            Log.d("ikaros", item.rank + " " + item.name);
                             holder.name.setText(item.name);
                             holder.rank.setText(String.valueOf(item.rank));
                         }

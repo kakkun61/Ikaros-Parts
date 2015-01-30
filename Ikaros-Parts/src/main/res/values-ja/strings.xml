@@ -4,4 +4,5 @@
     <string name="mission_skill">ミッションスキル</string>
     <string name="battle_skill">艦隊戦スキル</string>
     <string name="trigger">発動条件</string>
+    <string name="material">生産材料</string>
 </resources>
